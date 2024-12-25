@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="">
+<head>
+    <meta charset="utf-8">
+    <title>Songs Homepage - Welcome to My Music Store</title>
+    <style>
+        body {
+            width: 800px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to My Music Store</h1>
+</header>
+<main>
+    <h2>Choose a song:</h2>
+    <form method="GET" action="/artists">
+        <div th:each="song : ${songs}">
+            <input type="radio" th:name="trackId" th:value="${song.getTrackId()}" th:id="${song.getTrackId()}">
+            <label th:for="${song.getTrackId()}" th:text="${song.getTitle()} + ', Genre: ' + ${song.getGenre()} + ', Release Year: ' + ${song.getReleaseYear()} + ', Album: ' + ${song.getAlbum().getName()}"></label>
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <button type="button" th:onclick="'location.href=\'/songs/delete/' + ${song.getId()} + '\''">Delete</button>
+            </th:block>
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <button type="button" th:onclick="'location.href=\'/songs/edit-form/' + ${song.getId()} + '\''">Edit</button>
+            </th:block>
+            <br>
+        </div>
+        <input type='submit' value='Submit'>
+    </form>
+    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+        <form method="GET" action="/songs/add">
+            <input type="submit" value="Add new song">
+        </form>
+    </th:block>
+    </br>
+    <form method="GET" action="/songs/search">
+
+        <input type="text" id="album_id" name="album_id"/>
+        <input type='submit' value='Submit'>
+    </form>
+
+    <div sec:authorize="isAuthenticated()">
+        <a href="/logout">
+            Logout
+        </a>
+    </div>
+
+    <div sec:authorize="isAnonymous()">
+        <a href="/login">
+            Login
+        </a>
+    </div>
+
+</main>
+</body>
+</html>
